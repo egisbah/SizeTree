@@ -15,10 +15,13 @@ namespace SizeTree.ConsoleApp
     {
         private string _targetPath;
         private bool _includeSubDirs;
+        private bool _writeToOutputFile;
         private readonly IFileService _fileService;
-        public SizeTreeApp(IFileService fileService)
+        private readonly IOutputService _outputService;
+        public SizeTreeApp(IFileService fileService, IOutputService outputService)
         {
             _fileService = fileService;
+            _outputService = outputService;
         }
 
         public async Task<int> Run(string[] args, CancellationToken ct)
@@ -32,9 +35,14 @@ namespace SizeTree.ConsoleApp
                 Console.WriteLine("");
                 Console.Write("Include sub dirs?: ");
                 _includeSubDirs = bool.Parse(Console.ReadLine());
+                Console.WriteLine("");
+                Console.Write("Write to output file?: ");
+                _writeToOutputFile = bool.Parse(Console.ReadLine());
             }
             HandleArgs(args);
             var result = await _fileService.CalculateFileSizes(_targetPath, _includeSubDirs);
+            if (_writeToOutputFile)
+                await _outputService.WriteOutputToFile(result);
             result.ForEach(x =>
             {
                 Console.WriteLine($"Name: {x.FileName} ({x.PathToFile})", Color.Green);

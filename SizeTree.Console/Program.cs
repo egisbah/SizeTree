@@ -18,6 +18,7 @@ namespace SizeTree.ConsoleApp
             .ConfigureServices((hostBuilderContext, services) => {
                 services.AddSingleton<ISizeTreeApp, SizeTreeApp>();
                 services.AddSingleton<IFileService, FileService>();
+                services.AddSingleton<IOutputService, OutputService>();
             });
         static ISizeTreeApp BuildApp(string[] args)
         {
