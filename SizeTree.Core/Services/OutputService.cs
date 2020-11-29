@@ -1,12 +1,10 @@
-﻿using SizeTree.ConsoleApp.Models;
+﻿using SizeTree.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SizeTree.ConsoleApp.Services
+namespace SizeTree.Core.Services
 {
     public class OutputService : IOutputService
     {

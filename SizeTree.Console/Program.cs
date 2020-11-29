@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SizeTree.ConsoleApp.Services;
-using System;
+using SizeTree.Core.Helpers;
 using System.Threading.Tasks;
 
 namespace SizeTree.ConsoleApp
@@ -16,9 +15,8 @@ namespace SizeTree.ConsoleApp
         static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostBuilderContext, services) => {
+                services.AddSizeTreeCore();
                 services.AddSingleton<ISizeTreeApp, SizeTreeApp>();
-                services.AddSingleton<IFileService, FileService>();
-                services.AddSingleton<IOutputService, OutputService>();
             });
         static ISizeTreeApp BuildApp(string[] args)
         {

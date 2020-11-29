@@ -1,10 +1,9 @@
-﻿using SizeTree.ConsoleApp.Services;
+﻿using SizeTree.Core.Services;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Console = Colorful.Console;
 using System.Drawing;
-using System;
 
 namespace SizeTree.ConsoleApp
 {

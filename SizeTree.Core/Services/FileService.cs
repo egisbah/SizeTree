@@ -1,13 +1,11 @@
-﻿using SizeTree.ConsoleApp.Models;
-using System;
+﻿using ByteSizeLib;
+using SizeTree.Core.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using ByteSizeLib;
 
-namespace SizeTree.ConsoleApp.Services
+namespace SizeTree.Core.Services
 {
     public class FileService : IFileService
     {
