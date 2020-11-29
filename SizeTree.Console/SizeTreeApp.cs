@@ -44,14 +44,25 @@ namespace SizeTree.ConsoleApp
                 _countOfTopItems = int.Parse(Console.ReadLine());
             }
             HandleArgs(args);
-            var result = await _fileService.CalculateFileSizes(_targetPath, _includeSubDirs);
+            var resultFiles = await _fileService.CalculateFileSizes(_targetPath, _includeSubDirs);
+            var resultFolders = await _fileService.CalculateFolderSizes(_targetPath, _includeSubDirs);
             if (_writeToOutputFile)
-                await _outputService.WriteOutputToFile(result);
-            Console.WriteLine($"Top {_countOfTopItems} biggest files:", Color.Yellow);
-            result.Take(_countOfTopItems).ToList().ForEach(x =>
+            {
+                await _outputService.WriteOutputToFile(resultFiles);
+                await _outputService.WriteOutputToFile(resultFolders);
+            }
+            Console.WriteLine($"Top {_countOfTopItems} biggest files:", Color.Red);
+            resultFiles.Take(_countOfTopItems).ToList().ForEach(x =>
             {
                 Console.WriteLine($"Name: {x.FileName} ({x.PathToFile})", Color.Green);
                 Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
+                Console.WriteLine("------------------------------------", Color.Yellow);
+            });
+            Console.WriteLine($"Top {_countOfTopItems} biggest folders:", Color.Red);
+            resultFolders.Take(_countOfTopItems).ToList().ForEach(x => {
+                Console.WriteLine($"Name: {x.FolderName} ({x.PathToFolder})", Color.Green);
+                Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
+                Console.WriteLine($"File count: {x.FileCount}", Color.Green);
                 Console.WriteLine("------------------------------------", Color.Yellow);
             });
             Console.Write("Press any key to exit...");

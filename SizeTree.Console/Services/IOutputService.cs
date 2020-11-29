@@ -10,5 +10,6 @@ namespace SizeTree.ConsoleApp.Services
     public interface IOutputService
     {
         Task WriteOutputToFile(List<FileSizeInfo> input);
+        Task WriteOutputToFile(List<FolderSizeInfo> input);
     }
 }

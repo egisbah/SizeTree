@@ -10,5 +10,6 @@ namespace SizeTree.ConsoleApp.Services
     public interface IFileService
     {
         Task<List<FileSizeInfo>> CalculateFileSizes(string rootDirPath, bool includeSubDirs);
+        Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs);
     }
 }
