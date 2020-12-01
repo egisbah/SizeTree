@@ -9,25 +9,59 @@ namespace SizeTree.Core.Services
 {
     public class FileService : IFileService
     {
-        public async Task<List<FileSizeInfo>> CalculateFileSizes(string rootDirPath, bool includeSubDirs)
+        public async Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs)
         {
-            var output = new List<FileSizeInfo>();
+            var output = new List<FolderSizeInfo>();
             if (!Directory.Exists(rootDirPath))
                 return output;
-            await Task.Run(() => 
+            var options = new EnumerationOptions
             {
-                var allFiles = includeSubDirs switch
+                IgnoreInaccessible = true,
+                RecurseSubdirectories = includeSubDirs
+            };
+            var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+            foreach (var folder in allFolders)
+            {
+                var generated = await GenerateFolderInfo(folder, true);
+                output.Add(generated);
+            }
+
+            var rootDir = new DirectoryInfo(rootDirPath);
+            output.Add(await GenerateFolderInfo(rootDirPath, false));
+
+            return output.OrderByDescending(x => x.FolderSizeInBytes).ToList(); ;
+        }
+        private async Task<FolderSizeInfo> GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
+        {
+            var folderSizeInfo = new FolderSizeInfo();
+            var dir = new DirectoryInfo(path);
+            var files = dir.EnumerateFiles("*.*", new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = includeSubDirs }).ToList();
+            if (additionalFiles != null)
+                files.AddRange(additionalFiles);
+            var size = ByteSize.FromBytes(files.Sum(x => x.Length));
+            folderSizeInfo.FolderName = dir.Name;
+            folderSizeInfo.PathToFolder = dir.FullName;
+            folderSizeInfo.FileCount = files.Count();
+            folderSizeInfo.FolderSizeInBytes = size.Bytes;
+            folderSizeInfo.FolderSizeInMb = size.KiloBytes;
+            folderSizeInfo.FolderSizeInMb = size.MegaBytes;
+            folderSizeInfo.FolderSizeInGb = size.GigaBytes;
+            folderSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
+            folderSizeInfo.Files = await GenerateFileSizeInfo(files);
+            return folderSizeInfo;
+        }
+        private async Task<List<FileSizeInfo>> GenerateFileSizeInfo(List<FileInfo> input)
+        {
+            var output = new List<FileSizeInfo>();
+
+            await Task.Run(() =>
+            {
+                foreach (var file in input)
                 {
-                    true => Directory.GetFiles(rootDirPath, "*.*",SearchOption.AllDirectories),
-                    false => Directory.GetFiles(rootDirPath, "*.*", SearchOption.TopDirectoryOnly)
-                };
-                foreach (var file in allFiles)
-                {
-                    var fileInfo = new FileInfo(file);
-                    var size = ByteSize.FromBytes(fileInfo.Length);
+                    var size = ByteSize.FromBytes(file.Length);
                     var fileSizeInfo = new FileSizeInfo();
-                    fileSizeInfo.FileName = fileInfo.Name;
-                    fileSizeInfo.PathToFile = fileInfo.FullName;
+                    fileSizeInfo.FileName = file.Name;
+                    fileSizeInfo.PathToFile = file.FullName;
                     fileSizeInfo.FileSizeInBytes = size.Bytes;
                     fileSizeInfo.FileSizeInKilobytes = size.KiloBytes;
                     fileSizeInfo.FileSizeInMb = size.MegaBytes;
@@ -37,39 +71,6 @@ namespace SizeTree.Core.Services
                 }
             });
             return output.OrderByDescending(x => x.FileSizeInBytes).ToList();
-        }
-        public async Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs)
-        {
-            var output = new List<FolderSizeInfo>();
-            if (!Directory.Exists(rootDirPath))
-                return output;
-            await Task.Run(() =>
-            {
-                var options = new EnumerationOptions();
-                options.IgnoreInaccessible = true;
-                var allFolders = includeSubDirs switch
-                {
-                    true => Directory.GetDirectories(rootDirPath, "*", new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = true }),
-                    false => Directory.GetDirectories(rootDirPath, "*", new EnumerationOptions { IgnoreInaccessible = true })
-                };
-                foreach (var folder in allFolders)
-                {
-                    var folderSizeInfo = new FolderSizeInfo();
-                    var dir = new DirectoryInfo(folder);
-                    var files = dir.EnumerateFiles("*.*", new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = true });
-                    var size = ByteSize.FromBytes(files.Sum(x => x.Length));
-                    folderSizeInfo.FolderName = dir.Name;
-                    folderSizeInfo.PathToFolder = dir.FullName;
-                    folderSizeInfo.FileCount = files.Count();
-                    folderSizeInfo.FolderSizeInBytes = size.Bytes;
-                    folderSizeInfo.FolderSizeInMb = size.KiloBytes;
-                    folderSizeInfo.FolderSizeInMb = size.MegaBytes;
-                    folderSizeInfo.FolderSizeInGb = size.GigaBytes;
-                    folderSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
-                    output.Add(folderSizeInfo);
-                }
-            });
-            return output.OrderByDescending(x => x.FolderSizeInBytes).ToList(); ;
         }
     }
 }

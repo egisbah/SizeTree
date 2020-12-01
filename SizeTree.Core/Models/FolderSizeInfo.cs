@@ -1,4 +1,6 @@
-﻿namespace SizeTree.Core.Models
+﻿using System.Collections.Generic;
+
+namespace SizeTree.Core.Models
 {
     public class FolderSizeInfo
     {
@@ -10,5 +12,6 @@
         public double FolderSizeInMb { get; set; }
         public double FolderSizeInGb { get; set; }
         public string FormatedSize { get; set; }
+        public List<FileSizeInfo> Files { get; set; }
     }
 }
