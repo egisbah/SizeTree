@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.ConsoleApp", "SizeTree.Console\SizeTree.ConsoleApp.csproj", "{D1E6C4B6-98CB-430F-BAFF-0ADFA5B9938E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SizeTree.Core", "SizeTree.Core\SizeTree.Core.csproj", "{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.Core", "SizeTree.Core\SizeTree.Core.csproj", "{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SizeTree.WindowsFormsApp", "SizeTree.WindowsFormsApp\SizeTree.WindowsFormsApp.csproj", "{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
