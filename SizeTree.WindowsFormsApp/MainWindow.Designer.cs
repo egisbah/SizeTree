@@ -29,13 +29,158 @@ namespace SizeTree.WindowsFormsApp
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.button1 = new System.Windows.Forms.Button();
+            this.subDirCheckBox = new System.Windows.Forms.CheckBox();
+            this.writeToFileCheckBox = new System.Windows.Forms.CheckBox();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(641, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Calculate";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // subDirCheckBox
+            // 
+            this.subDirCheckBox.AutoSize = true;
+            this.subDirCheckBox.Location = new System.Drawing.Point(521, 18);
+            this.subDirCheckBox.Name = "subDirCheckBox";
+            this.subDirCheckBox.Size = new System.Drawing.Size(114, 19);
+            this.subDirCheckBox.TabIndex = 1;
+            this.subDirCheckBox.Text = "Include sub-dir\'s";
+            this.subDirCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // writeToFileCheckBox
+            // 
+            this.writeToFileCheckBox.AutoSize = true;
+            this.writeToFileCheckBox.Location = new System.Drawing.Point(428, 19);
+            this.writeToFileCheckBox.Name = "writeToFileCheckBox";
+            this.writeToFileCheckBox.Size = new System.Drawing.Size(87, 19);
+            this.writeToFileCheckBox.TabIndex = 2;
+            this.writeToFileCheckBox.Text = "Write to file";
+            this.writeToFileCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(49, 16);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(270, 23);
+            this.textBox1.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(31, 15);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Path";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(325, 15);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 5;
+            this.button2.Text = "Browse";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 15;
+            this.listBox1.Location = new System.Drawing.Point(12, 87);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(704, 169);
+            this.listBox1.TabIndex = 6;
+            // 
+            // listBox2
+            // 
+            this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 15;
+            this.listBox2.Location = new System.Drawing.Point(11, 296);
+            this.listBox2.Name = "listBox2";
+            this.listBox2.Size = new System.Drawing.Size(704, 184);
+            this.listBox2.TabIndex = 7;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 45);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(703, 16);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar1.Enabled = true;
+            this.progressBar1.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 66);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(38, 15);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "label2";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 277);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(38, 15);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "label3";
+            // 
+            // MainWindow
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(727, 492);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.listBox2);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.writeToFileCheckBox);
+            this.Controls.Add(this.subDirCheckBox);
+            this.Controls.Add(this.button1);
+            this.Name = "MainWindow";
+            this.Text = "Size Tree";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox subDirCheckBox;
+        private System.Windows.Forms.CheckBox writeToFileCheckBox;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox listBox2;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
