@@ -29,7 +29,33 @@ namespace SizeTree.WindowsFormsApp
         private async void button1_Click(object sender, EventArgs e)
         {
             SetUiAsLoading();
-            var folders = await Wtf(this.textBox1.Text, this.subDirCheckBox.Checked);
+            var folders = new List<FolderSizeInfo>();
+            var files = new List<FileSizeInfo>();
+            await Task.Run(async () =>
+            {
+                folders = await _fileService.CalculateFolderSizes(this.textBox1.Text, this.subDirCheckBox.Checked);
+                files = folders.SelectMany(x => x.Files).ToList();
+                if (this.writeToFileCheckBox.Checked)
+                {
+                    await _outputService.WriteOutputToFile(files);
+                    await _outputService.WriteOutputToFile(folders);
+                }
+            });
+            listBox1.Items.Clear();
+            folders.Take(10).ToList().ForEach(x =>
+            {
+                listBox1.Items.Add($"Name: {x.FolderName} ({x.PathToFolder})");
+                listBox1.Items.Add($"Size: {x.FormatedSize}");
+                listBox1.Items.Add($"File count: {x.FileCount}");
+                listBox1.Items.Add("------------------------------------");
+            });
+            listBox2.Items.Clear();
+            files.Take(10).ToList().ForEach(x =>
+            {
+                listBox2.Items.Add($"Name: {x.FileName} ({x.PathToFile})");
+                listBox2.Items.Add($"Size: {x.FormatedSize}");
+                listBox2.Items.Add("------------------------------------");
+            });
             SetUiAsNotLoading();
         }
 
@@ -37,12 +63,6 @@ namespace SizeTree.WindowsFormsApp
         {
             if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
                 this.textBox1.Text = this.folderBrowserDialog1.SelectedPath;
-        }
-
-        private async Task<List<FolderSizeInfo>> Wtf(string path, bool includeSubDirs)
-        {
-            await Task.Delay(1);
-            return await _fileService.CalculateFolderSizes(path, includeSubDirs);
         }
 
         private void SetUiAsNotLoading()

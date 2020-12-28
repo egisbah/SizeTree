@@ -1,5 +1,6 @@
 ﻿using ByteSizeLib;
 using SizeTree.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +10,13 @@ namespace SizeTree.Core.Services
 {
     public class FileService : IFileService
     {
+        private List<FolderSizeInfo> CalculatedFolderSizes;
+        private List<FileSizeInfo> GeneratedFileSizes;
         public async Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs)
         {
-            var output = new List<FolderSizeInfo>();
+            CalculatedFolderSizes = new List<FolderSizeInfo>();
             if (!Directory.Exists(rootDirPath))
-                return output;
+                return CalculatedFolderSizes;
             var options = new EnumerationOptions
             {
                 IgnoreInaccessible = true,
@@ -23,13 +26,13 @@ namespace SizeTree.Core.Services
             foreach (var folder in allFolders)
             {
                 var generated = await GenerateFolderInfo(folder, true);
-                output.Add(generated);
+                CalculatedFolderSizes.Add(generated);
             }
 
             var rootDir = new DirectoryInfo(rootDirPath);
-            output.Add(await GenerateFolderInfo(rootDirPath, false));
+            CalculatedFolderSizes.Add(await GenerateFolderInfo(rootDirPath, false));
 
-            return output.OrderByDescending(x => x.FolderSizeInBytes).ToList(); ;
+            return CalculatedFolderSizes.OrderByDescending(x => x.FolderSizeInBytes).ToList(); ;
         }
         private async Task<FolderSizeInfo> GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
         {
@@ -52,7 +55,7 @@ namespace SizeTree.Core.Services
         }
         private async Task<List<FileSizeInfo>> GenerateFileSizeInfo(List<FileInfo> input)
         {
-            var output = new List<FileSizeInfo>();
+            GeneratedFileSizes = new List<FileSizeInfo>();
 
             await Task.Run(() =>
             {
@@ -67,10 +70,10 @@ namespace SizeTree.Core.Services
                     fileSizeInfo.FileSizeInMb = size.MegaBytes;
                     fileSizeInfo.FileSizeInGb = size.GigaBytes;
                     fileSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
-                    output.Add(fileSizeInfo);
+                    GeneratedFileSizes.Add(fileSizeInfo);
                 }
             });
-            return output.OrderByDescending(x => x.FileSizeInBytes).ToList();
+            return GeneratedFileSizes.OrderByDescending(x => x.FileSizeInBytes).ToList();
         }
     }
 }

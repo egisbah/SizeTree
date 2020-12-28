@@ -1,16 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SizeTree.Core.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SizeTree.WindowsFormsApp
 {
     static class Program
     {
-        public static IServiceProvider ServiceProvider { get; set; }
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -20,16 +17,17 @@ namespace SizeTree.WindowsFormsApp
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            ConfigureServices();
-            Application.Run((Form)ServiceProvider.GetService(typeof(MainWindow)));
+            var builder = new HostBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddScoped<MainWindow>();
+                    services.AddSizeTreeCore();
+                });
+            var host = builder.Build();
+            using var serviceScope = host.Services.CreateScope();
+            var services = serviceScope.ServiceProvider;
+            Application.Run(services.GetRequiredService<MainWindow>());
         }
 
-        private static void ConfigureServices()
-        {
-            var services = new ServiceCollection();
-            services.AddSizeTreeCore();
-            services.AddScoped(typeof(MainWindow));
-            ServiceProvider = services.BuildServiceProvider();
-        }
     }
 }

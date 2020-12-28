@@ -8,6 +8,8 @@ namespace SizeTree.Core.Services
 {
     public class OutputService : IOutputService
     {
+        private bool disposedValue;
+
         public async Task WriteOutputToFile(List<FileSizeInfo> input)
         {
             using StreamWriter file = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + @$"\output-files.txt");

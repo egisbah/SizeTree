@@ -66,7 +66,8 @@ namespace SizeTree.WindowsFormsApp
             // writeToFileCheckBox
             // 
             this.writeToFileCheckBox.AutoSize = true;
-            this.writeToFileCheckBox.Location = new System.Drawing.Point(428, 19);
+            this.writeToFileCheckBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.writeToFileCheckBox.Location = new System.Drawing.Point(428, 17);
             this.writeToFileCheckBox.Name = "writeToFileCheckBox";
             this.writeToFileCheckBox.Size = new System.Drawing.Size(87, 19);
             this.writeToFileCheckBox.TabIndex = 2;
@@ -83,9 +84,10 @@ namespace SizeTree.WindowsFormsApp
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label1.Location = new System.Drawing.Point(12, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(31, 15);
+            this.label1.Size = new System.Drawing.Size(32, 15);
             this.label1.TabIndex = 4;
             this.label1.Text = "Path";
             // 
@@ -112,9 +114,9 @@ namespace SizeTree.WindowsFormsApp
             // 
             this.listBox2.FormattingEnabled = true;
             this.listBox2.ItemHeight = 15;
-            this.listBox2.Location = new System.Drawing.Point(11, 296);
+            this.listBox2.Location = new System.Drawing.Point(12, 296);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(704, 184);
+            this.listBox2.Size = new System.Drawing.Size(703, 184);
             this.listBox2.TabIndex = 7;
             // 
             // progressBar1
@@ -123,26 +125,28 @@ namespace SizeTree.WindowsFormsApp
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(703, 16);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar1.Enabled = true;
             this.progressBar1.TabIndex = 8;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 66);
+            this.label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label2.Location = new System.Drawing.Point(11, 69);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 15);
+            this.label2.Size = new System.Drawing.Size(47, 15);
             this.label2.TabIndex = 9;
-            this.label2.Text = "label2";
+            this.label2.Text = "Folders";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 277);
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label3.Location = new System.Drawing.Point(8, 278);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(38, 15);
+            this.label3.Size = new System.Drawing.Size(31, 15);
             this.label3.TabIndex = 10;
-            this.label3.Text = "label3";
+            this.label3.Text = "Files";
             // 
             // MainWindow
             // 
