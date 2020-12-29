@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.WindowsFormsApp", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{F261038B-CC44-4766-98BF-38872ADB740D}"
 	ProjectSection(SolutionItems) = preProject
+		Misc\background.jpg = Misc\background.jpg
 		Misc\Iconsmind-Outline-Folders.ico = Misc\Iconsmind-Outline-Folders.ico
 	EndProjectSection
 EndProject

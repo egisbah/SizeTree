@@ -1,4 +1,7 @@
 ﻿
+using System;
+using System.Drawing;
+
 namespace SizeTree.WindowsFormsApp
 {
     partial class MainWindow
@@ -195,6 +198,8 @@ namespace SizeTree.WindowsFormsApp
             this.Controls.Add(this.button1);
             this.Name = "MainWindow";
             this.Text = "Size Tree";
+            string path = $"{AppContext.BaseDirectory}Misc\\background.jpg";
+            this.BackgroundImage = Image.FromFile(path);
             this.ResumeLayout(false);
             this.PerformLayout();
 
