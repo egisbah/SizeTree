@@ -8,5 +8,7 @@ namespace SizeTree.Core.Services
     public interface IFileService
     {
         Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs);
+        IAsyncEnumerable<FolderSizeInfo> CalculateFolderSizesAsyncStream(string rootDirPath, bool includeSubDirs);
+        Task<int> GetCountOfSubDirectories(string rootDirPath);
     }
 }

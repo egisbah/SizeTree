@@ -35,6 +35,42 @@ namespace SizeTree.Core.Services
 
             return output;
         }
+        public async IAsyncEnumerable<FolderSizeInfo> CalculateFolderSizesAsyncStream(string rootDirPath, bool includeSubDirs)
+        {
+            bool shouldCalculate = true;
+            if (!Directory.Exists(rootDirPath))
+                shouldCalculate = false;
+
+            if (shouldCalculate)
+            {
+                await Task.Delay(0);
+                var options = new EnumerationOptions
+                {
+                    IgnoreInaccessible = true,
+                    RecurseSubdirectories = includeSubDirs
+                };
+                var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                foreach (var folder in allFolders)
+                {
+                    var generated = GenerateFolderInfo(folder, true);
+                    yield return generated;
+                }
+                var root = GenerateFolderInfo(rootDirPath, false);
+                yield return root;
+            }
+        }
+        public async Task<int> GetCountOfSubDirectories(string rootDirPath)
+        {
+            await Task.Delay(0);
+            var options = new EnumerationOptions
+            {
+                IgnoreInaccessible = true,
+                RecurseSubdirectories = true
+            };
+            var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+            return allFolders.Count();
+        }
+
         private FolderSizeInfo GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
         {
             var folderSizeInfo = new FolderSizeInfo();

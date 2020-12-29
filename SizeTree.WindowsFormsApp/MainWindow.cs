@@ -24,10 +24,34 @@ namespace SizeTree.WindowsFormsApp
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            var folderCount = 0;
+            if (subDirCheckBox.Checked)
+            {
+                await Task.Run(async () =>
+                {
+                    folderCount = await _fileService.GetCountOfSubDirectories(textBox1.Text);
+                });
+                SetDynamicProgressBar(folderCount);
+            }
+            else
+                SetStaticProgressBar();
+
             SetUiAsLoading();
+
             await Task.Run(async () =>
             {
-                Folders = await _fileService.CalculateFolderSizes(textBox1.Text, subDirCheckBox.Checked);
+                if (subDirCheckBox.Checked)
+                {
+                    Folders = new List<FolderSizeInfo>();
+                    await foreach (var item in _fileService.CalculateFolderSizesAsyncStream(textBox1.Text, subDirCheckBox.Checked))
+                    {
+                        Folders.Add(item);
+                        PushProgressBar();
+                    }
+                }
+                else
+                    Folders = await _fileService.CalculateFolderSizes(textBox1.Text, subDirCheckBox.Checked);
+                
                 Files = Folders.SelectMany(x => x.Files).ToList();
 
                 if (this.writeToFileCheckBox.Checked)
@@ -35,10 +59,14 @@ namespace SizeTree.WindowsFormsApp
                     await _outputService.WriteOutputToFile(Files);
                     await _outputService.WriteOutputToFile(Folders);
                 }
+                
             });
 
             richTextBox1.Text = "";
-            Folders.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
+            Folders.OrderByDescending(x => x.FolderSizeInBytes)
+                    .Take(int.Parse(comboBox1.SelectedItem.ToString()))
+                    .ToList()
+                    .ForEach(x =>
             {
                 richTextBox1.AppendText($"Name: {x.FolderName} ({x.PathToFolder})");
                 richTextBox1.AppendText(Environment.NewLine);
@@ -63,13 +91,31 @@ namespace SizeTree.WindowsFormsApp
             });
             SetUiAsNotLoading();
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
                 this.textBox1.Text = this.folderBrowserDialog1.SelectedPath;
         }
-
+        private void PushProgressBar()
+        {
+            // This is written in explicit way to be able to interact with from from Task
+            this.progressBar1.BeginInvoke(new Action(() =>
+            {
+                this.progressBar1.PerformStep();
+            }));
+        }
+        private void SetDynamicProgressBar(int count)
+        {
+            progressBar1.Maximum = count;
+            progressBar1.Minimum = 0;
+            progressBar1.Value = 0;
+            progressBar1.Step = 1;
+            progressBar1.Style = ProgressBarStyle.Blocks;
+        }
+        private void SetStaticProgressBar()
+        {
+            progressBar1.Style = ProgressBarStyle.Marquee;
+        }
         private void SetUiAsNotLoading()
         {
             this.progressBar1.Visible = false;
