@@ -2,11 +2,7 @@
 using SizeTree.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,8 +12,8 @@ namespace SizeTree.WindowsFormsApp
     {
         private readonly IFileService _fileService;
         private readonly IOutputService _outputService;
-
-        private bool IsLoading = false;
+        private List<FolderSizeInfo> Folders;
+        private List<FileSizeInfo> Files;
         public MainWindow(IFileService fileService, IOutputService outputService)
         {
             _fileService = fileService;
@@ -28,35 +24,52 @@ namespace SizeTree.WindowsFormsApp
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            SetUiAsLoading();
-            var folders = new List<FolderSizeInfo>();
-            var files = new List<FileSizeInfo>();
-            await Task.Run(async () =>
+            try
             {
-                folders = await _fileService.CalculateFolderSizes(this.textBox1.Text, this.subDirCheckBox.Checked);
-                files = folders.SelectMany(x => x.Files).ToList();
-                if (this.writeToFileCheckBox.Checked)
+                SetUiAsLoading();
+                await Task.Run(async () =>
                 {
-                    await _outputService.WriteOutputToFile(files);
-                    await _outputService.WriteOutputToFile(folders);
-                }
-            });
-            listBox1.Items.Clear();
-            folders.Take(10).ToList().ForEach(x =>
+                    Folders = await _fileService.CalculateFolderSizes(textBox1.Text, subDirCheckBox.Checked);
+                    Files = Folders.SelectMany(x => x.Files).ToList();
+
+                    if (this.writeToFileCheckBox.Checked)
+                    {
+                        await _outputService.WriteOutputToFile(Files);
+                        await _outputService.WriteOutputToFile(Folders);
+                    }
+                });
+
+                richTextBox1.Text = "";
+                Folders.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
+                {
+                    richTextBox1.AppendText($"Name: {x.FolderName} ({x.PathToFolder})");
+                    richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.AppendText($"Size: {x.FormatedSize}");
+                    richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.AppendText($"File count: {x.FileCount}");
+                    richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.AppendText("------------------------------------");
+                    richTextBox1.AppendText(Environment.NewLine);
+                    richTextBox1.GoToLine(0);
+                });
+                richTextBox2.Text = "";
+                Files.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
+                {
+                    richTextBox2.AppendText($"Name: {x.FileName} ({x.PathToFile})");
+                    richTextBox2.AppendText(Environment.NewLine);
+                    richTextBox2.AppendText($"Size: {x.FormatedSize}");
+                    richTextBox2.AppendText(Environment.NewLine);
+                    richTextBox2.AppendText("------------------------------------");
+                    richTextBox2.AppendText(Environment.NewLine);
+                    richTextBox1.GoToLine(0);
+                });
+                SetUiAsNotLoading();
+            }
+            catch(Exception ex)
             {
-                listBox1.Items.Add($"Name: {x.FolderName} ({x.PathToFolder})");
-                listBox1.Items.Add($"Size: {x.FormatedSize}");
-                listBox1.Items.Add($"File count: {x.FileCount}");
-                listBox1.Items.Add("------------------------------------");
-            });
-            listBox2.Items.Clear();
-            files.Take(10).ToList().ForEach(x =>
-            {
-                listBox2.Items.Add($"Name: {x.FileName} ({x.PathToFile})");
-                listBox2.Items.Add($"Size: {x.FormatedSize}");
-                listBox2.Items.Add("------------------------------------");
-            });
-            SetUiAsNotLoading();
+                throw;
+            }
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -73,6 +86,7 @@ namespace SizeTree.WindowsFormsApp
             this.subDirCheckBox.Enabled = true;
             this.writeToFileCheckBox.Enabled = true;
             this.textBox1.Enabled = true;
+            this.comboBox1.Enabled = true;
         }
         private void SetUiAsLoading()
         {
@@ -82,6 +96,7 @@ namespace SizeTree.WindowsFormsApp
             this.subDirCheckBox.Enabled = false;
             this.writeToFileCheckBox.Enabled = false;
             this.textBox1.Enabled = false;
+            this.comboBox1.Enabled = false;
         }
     }
 }

@@ -7,8 +7,8 @@ namespace SizeTree.Core.Helpers
     {
         public static IServiceCollection AddSizeTreeCore (this IServiceCollection sc)
         {
-            sc.AddTransient<IFileService, FileService>();
-            sc.AddTransient<IOutputService, OutputService>();
+            sc.AddScoped<IFileService, FileService>();
+            sc.AddScoped<IOutputService, OutputService>();
             return sc;
         }
     }

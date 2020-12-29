@@ -14,19 +14,31 @@ namespace SizeTree.WindowsFormsApp
         [STAThread]
         static void Main()
         {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             var builder = new HostBuilder()
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddScoped<MainWindow>();
-                    services.AddSizeTreeCore();
-                });
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<MainWindow>();
+                services.AddLogging();
+                services.AddSizeTreeCore();
+            });
+
             var host = builder.Build();
+
             using var serviceScope = host.Services.CreateScope();
             var services = serviceScope.ServiceProvider;
-            Application.Run(services.GetRequiredService<MainWindow>());
+            try
+            {
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                var mainWindow = services.GetRequiredService<MainWindow>();
+                Application.Run(mainWindow);
+                Console.WriteLine("Running");
+            }
+            catch
+            {
+                Console.WriteLine("Failed to run");
+            }
         }
 
     }

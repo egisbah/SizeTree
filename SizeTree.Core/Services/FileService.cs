@@ -10,31 +10,32 @@ namespace SizeTree.Core.Services
 {
     public class FileService : IFileService
     {
-        private List<FolderSizeInfo> CalculatedFolderSizes;
-        private List<FileSizeInfo> GeneratedFileSizes;
         public async Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs)
         {
-            CalculatedFolderSizes = new List<FolderSizeInfo>();
+            var calculatedFolderSizes = new List<FolderSizeInfo>();
             if (!Directory.Exists(rootDirPath))
-                return CalculatedFolderSizes;
-            var options = new EnumerationOptions
+                return calculatedFolderSizes;
+            await Task.Run(() =>
             {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = includeSubDirs
-            };
-            var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
-            foreach (var folder in allFolders)
-            {
-                var generated = await GenerateFolderInfo(folder, true);
-                CalculatedFolderSizes.Add(generated);
-            }
+                var options = new EnumerationOptions
+                {
+                    IgnoreInaccessible = true,
+                    RecurseSubdirectories = includeSubDirs
+                };
+                var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                foreach (var folder in allFolders)
+                {
+                    var generated = GenerateFolderInfo(folder, true);
+                    calculatedFolderSizes.Add(generated);
+                }
 
-            var rootDir = new DirectoryInfo(rootDirPath);
-            CalculatedFolderSizes.Add(await GenerateFolderInfo(rootDirPath, false));
+                calculatedFolderSizes.Add(GenerateFolderInfo(rootDirPath, false));
+            });
+            var output = calculatedFolderSizes.OrderByDescending(x => x.FolderSizeInBytes).ToList();
 
-            return CalculatedFolderSizes.OrderByDescending(x => x.FolderSizeInBytes).ToList(); ;
+            return output;
         }
-        private async Task<FolderSizeInfo> GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
+        private FolderSizeInfo GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
         {
             var folderSizeInfo = new FolderSizeInfo();
             var dir = new DirectoryInfo(path);
@@ -50,30 +51,30 @@ namespace SizeTree.Core.Services
             folderSizeInfo.FolderSizeInMb = size.MegaBytes;
             folderSizeInfo.FolderSizeInGb = size.GigaBytes;
             folderSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
-            folderSizeInfo.Files = await GenerateFileSizeInfo(files);
+            folderSizeInfo.Files = GenerateFileSizeInfo(files);
             return folderSizeInfo;
         }
-        private async Task<List<FileSizeInfo>> GenerateFileSizeInfo(List<FileInfo> input)
+        private List<FileSizeInfo> GenerateFileSizeInfo(List<FileInfo> input)
         {
-            GeneratedFileSizes = new List<FileSizeInfo>();
+            var generatedFileSizes = new List<FileSizeInfo>();
 
-            await Task.Run(() =>
+            foreach (var file in input)
             {
-                foreach (var file in input)
-                {
-                    var size = ByteSize.FromBytes(file.Length);
-                    var fileSizeInfo = new FileSizeInfo();
-                    fileSizeInfo.FileName = file.Name;
-                    fileSizeInfo.PathToFile = file.FullName;
-                    fileSizeInfo.FileSizeInBytes = size.Bytes;
-                    fileSizeInfo.FileSizeInKilobytes = size.KiloBytes;
-                    fileSizeInfo.FileSizeInMb = size.MegaBytes;
-                    fileSizeInfo.FileSizeInGb = size.GigaBytes;
-                    fileSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
-                    GeneratedFileSizes.Add(fileSizeInfo);
-                }
-            });
-            return GeneratedFileSizes.OrderByDescending(x => x.FileSizeInBytes).ToList();
+                var size = ByteSize.FromBytes(file.Length);
+                var fileSizeInfo = new FileSizeInfo();
+                fileSizeInfo.FileName = file.Name;
+                fileSizeInfo.PathToFile = file.FullName;
+                fileSizeInfo.FileSizeInBytes = size.Bytes;
+                fileSizeInfo.FileSizeInKilobytes = size.KiloBytes;
+                fileSizeInfo.FileSizeInMb = size.MegaBytes;
+                fileSizeInfo.FileSizeInGb = size.GigaBytes;
+                fileSizeInfo.FormatedSize = $"{size.LargestWholeNumberDecimalValue} {size.LargestWholeNumberDecimalSymbol}";
+                generatedFileSizes.Add(fileSizeInfo);
+            }
+
+            var output = generatedFileSizes.OrderByDescending(x => x.FileSizeInBytes).ToList();
+
+            return output;
         }
     }
 }
