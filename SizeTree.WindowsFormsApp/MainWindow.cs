@@ -24,52 +24,44 @@ namespace SizeTree.WindowsFormsApp
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            try
+            SetUiAsLoading();
+            await Task.Run(async () =>
             {
-                SetUiAsLoading();
-                await Task.Run(async () =>
-                {
-                    Folders = await _fileService.CalculateFolderSizes(textBox1.Text, subDirCheckBox.Checked);
-                    Files = Folders.SelectMany(x => x.Files).ToList();
+                Folders = await _fileService.CalculateFolderSizes(textBox1.Text, subDirCheckBox.Checked);
+                Files = Folders.SelectMany(x => x.Files).ToList();
 
-                    if (this.writeToFileCheckBox.Checked)
-                    {
-                        await _outputService.WriteOutputToFile(Files);
-                        await _outputService.WriteOutputToFile(Folders);
-                    }
-                });
+                if (this.writeToFileCheckBox.Checked)
+                {
+                    await _outputService.WriteOutputToFile(Files);
+                    await _outputService.WriteOutputToFile(Folders);
+                }
+            });
 
-                richTextBox1.Text = "";
-                Folders.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
-                {
-                    richTextBox1.AppendText($"Name: {x.FolderName} ({x.PathToFolder})");
-                    richTextBox1.AppendText(Environment.NewLine);
-                    richTextBox1.AppendText($"Size: {x.FormatedSize}");
-                    richTextBox1.AppendText(Environment.NewLine);
-                    richTextBox1.AppendText($"File count: {x.FileCount}");
-                    richTextBox1.AppendText(Environment.NewLine);
-                    richTextBox1.AppendText("------------------------------------");
-                    richTextBox1.AppendText(Environment.NewLine);
-                    richTextBox1.GoToLine(0);
-                });
-                richTextBox2.Text = "";
-                Files.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
-                {
-                    richTextBox2.AppendText($"Name: {x.FileName} ({x.PathToFile})");
-                    richTextBox2.AppendText(Environment.NewLine);
-                    richTextBox2.AppendText($"Size: {x.FormatedSize}");
-                    richTextBox2.AppendText(Environment.NewLine);
-                    richTextBox2.AppendText("------------------------------------");
-                    richTextBox2.AppendText(Environment.NewLine);
-                    richTextBox1.GoToLine(0);
-                });
-                SetUiAsNotLoading();
-            }
-            catch(Exception ex)
+            richTextBox1.Text = "";
+            Folders.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
             {
-                throw;
-            }
-
+                richTextBox1.AppendText($"Name: {x.FolderName} ({x.PathToFolder})");
+                richTextBox1.AppendText(Environment.NewLine);
+                richTextBox1.AppendText($"Size: {x.FormatedSize}");
+                richTextBox1.AppendText(Environment.NewLine);
+                richTextBox1.AppendText($"File count: {x.FileCount}");
+                richTextBox1.AppendText(Environment.NewLine);
+                richTextBox1.AppendText("------------------------------------");
+                richTextBox1.AppendText(Environment.NewLine);
+                richTextBox1.GoToLine(0);
+            });
+            richTextBox2.Text = "";
+            Files.Take(int.Parse(comboBox1.SelectedItem.ToString())).ToList().ForEach(x =>
+            {
+                richTextBox2.AppendText($"Name: {x.FileName} ({x.PathToFile})");
+                richTextBox2.AppendText(Environment.NewLine);
+                richTextBox2.AppendText($"Size: {x.FormatedSize}");
+                richTextBox2.AppendText(Environment.NewLine);
+                richTextBox2.AppendText("------------------------------------");
+                richTextBox2.AppendText(Environment.NewLine);
+                richTextBox1.GoToLine(0);
+            });
+            SetUiAsNotLoading();
         }
 
         private void button2_Click(object sender, EventArgs e)

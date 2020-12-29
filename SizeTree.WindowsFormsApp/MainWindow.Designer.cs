@@ -163,7 +163,7 @@ namespace SizeTree.WindowsFormsApp
             this.comboBox1.Items.Add(30);
             this.comboBox1.Items.Add(40);
             this.comboBox1.Items.Add(50);
-            this.comboBox1.SelectedText = "10";
+            this.comboBox1.SelectedItem = 10;
             // 
             // label4
             // 

@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.ConsoleApp", "Size
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.Core", "SizeTree.Core\SizeTree.Core.csproj", "{2E1011C6-A813-4E98-9478-3C00BAE1C7E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SizeTree.WindowsFormsApp", "SizeTree.WindowsFormsApp\SizeTree.WindowsFormsApp.csproj", "{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SizeTree.WindowsFormsApp", "SizeTree.WindowsFormsApp\SizeTree.WindowsFormsApp.csproj", "{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{F261038B-CC44-4766-98BF-38872ADB740D}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\Iconsmind-Outline-Folders.ico = Misc\Iconsmind-Outline-Folders.ico
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

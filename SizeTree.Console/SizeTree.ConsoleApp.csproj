@@ -13,6 +13,7 @@
     <RepositoryUrl>https://github.com/mykjar/SizeTree</RepositoryUrl>
     <PackageProjectUrl>https://github.com/mykjar/SizeTree</PackageProjectUrl>
     <PackageIcon></PackageIcon>
+    <ApplicationIcon>Iconsmind-Outline-Folders.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
