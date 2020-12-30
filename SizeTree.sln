@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{F261038B-C
 		Misc\Iconsmind-Outline-Folders.ico = Misc\Iconsmind-Outline-Folders.ico
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SizeTree.Setup", "SizeTree.Setup\SizeTree.Setup.vdproj", "{F41C8268-F1B4-4B6B-8506-2A4636F83C76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DF148C5-7278-4D3C-9E23-3AEEDCD4A25D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F41C8268-F1B4-4B6B-8506-2A4636F83C76}.Debug|Any CPU.ActiveCfg = Debug
+		{F41C8268-F1B4-4B6B-8506-2A4636F83C76}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
