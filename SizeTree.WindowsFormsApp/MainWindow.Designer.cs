@@ -32,6 +32,7 @@ namespace SizeTree.WindowsFormsApp
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.button1 = new System.Windows.Forms.Button();
             this.subDirCheckBox = new System.Windows.Forms.CheckBox();
@@ -47,6 +48,10 @@ namespace SizeTree.WindowsFormsApp
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip3 = new System.Windows.Forms.ToolTip(this.components);
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button1
@@ -178,7 +183,6 @@ namespace SizeTree.WindowsFormsApp
             30,
             40,
             50});
-            this.comboBox1.SelectedItem = 10;
             this.comboBox1.Location = new System.Drawing.Point(14, 86);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(44, 23);
@@ -208,12 +212,27 @@ namespace SizeTree.WindowsFormsApp
             this.label2.TabIndex = 15;
             this.label2.Text = "Folders";
             // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label5.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label5.Location = new System.Drawing.Point(13, 112);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(32, 15);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "0 / 0";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(727, 492);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBox1);
@@ -250,6 +269,10 @@ namespace SizeTree.WindowsFormsApp
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolTip toolTip2;
+        private System.Windows.Forms.ToolTip toolTip3;
+        private System.Windows.Forms.Label label5;
     }
 }
 

@@ -22,6 +22,7 @@ namespace SizeTree.WindowsFormsApp
             _outputService = outputService;
             _logger = logger;
             InitializeComponent();
+            InitialUiSetup();
             SetUiAsNotLoading();
         }
 
@@ -29,6 +30,7 @@ namespace SizeTree.WindowsFormsApp
         {
             try
             {
+                SetUiAsLoading();
                 var folderCount = 0;
                 if (subDirCheckBox.Checked)
                 {
@@ -40,8 +42,6 @@ namespace SizeTree.WindowsFormsApp
                 }
                 else
                     SetStaticProgressBar();
-
-                SetUiAsLoading();
 
                 await Task.Run(async () =>
                 {
@@ -121,6 +121,7 @@ namespace SizeTree.WindowsFormsApp
             this.progressBar1.BeginInvoke(new Action(() =>
             {
                 this.progressBar1.PerformStep();
+                this.label5.Text = $"{this.progressBar1.Value} / {this.progressBar1.Maximum}";
             }));
         }
         private void SetDynamicProgressBar(int count)
@@ -130,10 +131,19 @@ namespace SizeTree.WindowsFormsApp
             progressBar1.Value = 0;
             progressBar1.Step = 1;
             progressBar1.Style = ProgressBarStyle.Blocks;
+
+            label5.Text = $"0 / {count}";
         }
         private void SetStaticProgressBar()
         {
             progressBar1.Style = ProgressBarStyle.Marquee;
+        }
+        private void InitialUiSetup()
+        {
+            this.toolTip1.SetToolTip(this.writeToFileCheckBox, "Writes full lists of files & folders to applications root directory");
+            this.toolTip2.SetToolTip(this.subDirCheckBox, "Check if you want to include full folder tree under specified directory");
+            this.toolTip3.SetToolTip(this.comboBox1, "Choose how many records will be shown in files & folders output windows");
+            this.comboBox1.SelectedItem = 10;
         }
         private void SetUiAsNotLoading()
         {
@@ -144,6 +154,7 @@ namespace SizeTree.WindowsFormsApp
             this.writeToFileCheckBox.Enabled = true;
             this.textBox1.Enabled = true;
             this.comboBox1.Enabled = true;
+            this.label5.Visible = false;
         }
         private void SetUiAsLoading()
         {
@@ -154,6 +165,7 @@ namespace SizeTree.WindowsFormsApp
             this.writeToFileCheckBox.Enabled = false;
             this.textBox1.Enabled = false;
             this.comboBox1.Enabled = false;
+            this.label5.Visible = true;
         }
     }
 }
