@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Console = Colorful.Console;
 using System.Drawing;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace SizeTree.ConsoleApp
 {
@@ -19,54 +21,68 @@ namespace SizeTree.ConsoleApp
         private int _countOfTopItems;
         private readonly IFileService _fileService;
         private readonly IOutputService _outputService;
-        public SizeTreeApp(IFileService fileService, IOutputService outputService)
+        private readonly ILogger<SizeTreeApp> _logger;
+        public SizeTreeApp(IFileService fileService, IOutputService outputService, ILogger<SizeTreeApp> logger)
         {
             _fileService = fileService;
             _outputService = outputService;
+            _logger = logger;
         }
 
         public async Task<int> Run(string[] args, CancellationToken ct)
         {
-            Console.WriteAscii("FILE SIZE TREE", Color.Red);
-            if (args.Count() == 0)
+            try
             {
-                Console.Write("Path: ");
-                _targetPath = Console.ReadLine();
-                Console.WriteLine("");
-                Console.Write("Include sub dirs?: ");
-                _includeSubDirs = bool.Parse(Console.ReadLine());
-                Console.WriteLine("");
-                Console.Write("Write to output file?: ");
-                _writeToOutputFile = bool.Parse(Console.ReadLine());
-                Console.WriteLine("");
-                Console.Write("How many top files/folders to show?: ");
-                _countOfTopItems = int.Parse(Console.ReadLine());
+                Console.WriteAscii("FILE SIZE TREE", Color.Red);
+                if (args.Count() == 0)
+                {
+                    Console.Write("Path: ");
+                    _targetPath = Console.ReadLine();
+                    Console.WriteLine("");
+                    Console.Write("Include sub dirs?: ");
+                    _includeSubDirs = bool.Parse(Console.ReadLine());
+                    Console.WriteLine("");
+                    Console.Write("Write to output file?: ");
+                    _writeToOutputFile = bool.Parse(Console.ReadLine());
+                    Console.WriteLine("");
+                    Console.Write("How many top files/folders to show?: ");
+                    _countOfTopItems = int.Parse(Console.ReadLine());
+                }
+                HandleArgs(args);
+                var folders = await _fileService.CalculateFolderSizes(_targetPath, _includeSubDirs);
+                var files = folders.SelectMany(x => x.Files).ToList();
+                if (_writeToOutputFile)
+                {
+                    await _outputService.WriteOutputToFile(files);
+                    await _outputService.WriteOutputToFile(folders);
+                }
+                Console.WriteLine($"Top {_countOfTopItems} biggest files:", Color.Red);
+                files.Take(_countOfTopItems).ToList().ForEach(x =>
+                {
+                    Console.WriteLine($"Name: {x.FileName} ({x.PathToFile})", Color.Green);
+                    Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
+                    Console.WriteLine("------------------------------------", Color.Yellow);
+                });
+                Console.WriteLine($"Top {_countOfTopItems} biggest folders:", Color.Red);
+                folders.Take(_countOfTopItems).ToList().ForEach(x => {
+                    Console.WriteLine($"Name: {x.FolderName} ({x.PathToFolder})", Color.Green);
+                    Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
+                    Console.WriteLine($"File count: {x.FileCount}", Color.Green);
+                    Console.WriteLine("------------------------------------", Color.Yellow);
+                });
+                Console.Write("Press any key to exit...");
+                Console.ReadKey();
+                return 0;
             }
-            HandleArgs(args);
-            var folders = await _fileService.CalculateFolderSizes(_targetPath, _includeSubDirs);
-            var files = folders.SelectMany(x => x.Files).ToList();
-            if (_writeToOutputFile)
+            catch(Exception ex)
             {
-                await _outputService.WriteOutputToFile(files);
-                await _outputService.WriteOutputToFile(folders);
+                _logger.LogError(ex?.Message, ex, ex?.InnerException);
+                Console.WriteLine($"ERROR : {ex.Message} {ex?.InnerException?.Message}");
+                Console.Write("Press any key to exit...");
+                Console.ReadKey();
+                return 1;
             }
-            Console.WriteLine($"Top {_countOfTopItems} biggest files:", Color.Red);
-            files.Take(_countOfTopItems).ToList().ForEach(x =>
-            {
-                Console.WriteLine($"Name: {x.FileName} ({x.PathToFile})", Color.Green);
-                Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
-                Console.WriteLine("------------------------------------", Color.Yellow);
-            });
-            Console.WriteLine($"Top {_countOfTopItems} biggest folders:", Color.Red);
-            folders.Take(_countOfTopItems).ToList().ForEach(x => {
-                Console.WriteLine($"Name: {x.FolderName} ({x.PathToFolder})", Color.Green);
-                Console.WriteLine($"Size: {x.FormatedSize}", Color.Green);
-                Console.WriteLine($"File count: {x.FileCount}", Color.Green);
-                Console.WriteLine("------------------------------------", Color.Yellow);
-            });
-            Console.Write("Press any key to exit...");
-            Console.ReadKey();
-            return 0;
+
         }
         private void HandleArgs(string[] args)
         {

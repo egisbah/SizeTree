@@ -7,7 +7,7 @@ namespace SizeTree.Core.Services
 {
     public interface IOutputService
     {
-        Task WriteOutputToFile(List<FileSizeInfo> input);
-        Task WriteOutputToFile(List<FolderSizeInfo> input);
+        Task WriteOutputToFile(IEnumerable<FileSizeInfo> input);
+        Task WriteOutputToFile(IEnumerable<FolderSizeInfo> input);
     }
 }
