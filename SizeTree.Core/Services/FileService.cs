@@ -51,7 +51,6 @@ namespace SizeTree.Core.Services
         }
         public async IAsyncEnumerable<FolderSizeInfo> CalculateFolderSizesAsyncStream(string rootDirPath, bool includeSubDirs)
         {
-
             bool shouldCalculate = true;
             try
             {

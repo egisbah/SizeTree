@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using SizeTree.Core.Helpers;
 using System;
 using System.Windows.Forms;
@@ -18,8 +20,15 @@ namespace SizeTree.WindowsFormsApp
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<MainWindow>();
-                services.AddLogging();
                 services.AddSizeTreeCore();
+                var serilogLogger = new LoggerConfiguration()
+                    .WriteTo.File($"{AppDomain.CurrentDomain.BaseDirectory}\\Logs\\log-ui.txt", rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+                services.AddLogging(x =>
+                {
+                    x.SetMinimumLevel(LogLevel.Information);
+                    x.AddSerilog(logger: serilogLogger, dispose: true);
+                });
             });
 
             var host = builder.Build();

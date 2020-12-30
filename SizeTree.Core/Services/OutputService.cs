@@ -27,7 +27,7 @@ namespace SizeTree.Core.Services
                 var exception = new OutputServiceException(
                     "Failure in output service",
                     new WriteOutputToFileException(
-                        "Writing files size info to file has failed",
+                        "Writing files size info to log has failed",
                         ex));
                 throw exception;
             }
@@ -51,7 +51,7 @@ namespace SizeTree.Core.Services
                 var exception = new OutputServiceException(
                     "Failure in output service",
                     new WriteOutputToFileException(
-                        "Writing folders size info to file has failed",
+                        "Writing folders size info to log has failed",
                         ex));
                 throw exception;
             }
