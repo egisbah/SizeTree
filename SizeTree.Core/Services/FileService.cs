@@ -1,5 +1,6 @@
 ﻿using ByteSizeLib;
 using SizeTree.Core.Models;
+using SizeTree.Core.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,34 +13,60 @@ namespace SizeTree.Core.Services
     {
         public async Task<List<FolderSizeInfo>> CalculateFolderSizes(string rootDirPath, bool includeSubDirs)
         {
-            var calculatedFolderSizes = new List<FolderSizeInfo>();
-            if (!Directory.Exists(rootDirPath))
-                return calculatedFolderSizes;
-            await Task.Run(() =>
+            try
             {
-                var options = new EnumerationOptions
+                var calculatedFolderSizes = new List<FolderSizeInfo>();
+                if (!Directory.Exists(rootDirPath))
+                    return calculatedFolderSizes;
+                await Task.Run(() =>
                 {
-                    IgnoreInaccessible = true,
-                    RecurseSubdirectories = includeSubDirs
-                };
-                var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
-                foreach (var folder in allFolders)
-                {
-                    var generated = GenerateFolderInfo(folder, true);
-                    calculatedFolderSizes.Add(generated);
-                }
+                    var options = new EnumerationOptions
+                    {
+                        IgnoreInaccessible = true,
+                        RecurseSubdirectories = includeSubDirs
+                    };
+                    var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                    foreach (var folder in allFolders)
+                    {
+                        var generated = GenerateFolderInfo(folder, true);
+                        calculatedFolderSizes.Add(generated);
+                    }
 
-                calculatedFolderSizes.Add(GenerateFolderInfo(rootDirPath, false));
-            });
-            var output = calculatedFolderSizes.OrderByDescending(x => x.FolderSizeInBytes).ToList();
+                    calculatedFolderSizes.Add(GenerateFolderInfo(rootDirPath, false));
+                });
+                var output = calculatedFolderSizes.OrderByDescending(x => x.FolderSizeInBytes).ToList();
 
-            return output;
+                return output;
+            }
+            catch(Exception ex)
+            {
+                var exception = new FileServiceException(
+                    "Failure in file service",
+                    new CalculateFolderSizesException(
+                        "Size calculation for given root path failed", 
+                        ex));
+                throw exception;
+            }
+
         }
         public async IAsyncEnumerable<FolderSizeInfo> CalculateFolderSizesAsyncStream(string rootDirPath, bool includeSubDirs)
         {
+
             bool shouldCalculate = true;
-            if (!Directory.Exists(rootDirPath))
-                shouldCalculate = false;
+            try
+            {
+                if (!Directory.Exists(rootDirPath))
+                    shouldCalculate = false;
+            }
+            catch(Exception ex)
+            {
+                var exception = new FileServiceException(
+                    "Failure in file service",
+                    new CalculateFolderSizesAsyncStreamException(
+                        "Size calculation for given root path failed",
+                        ex));
+                throw exception;
+            }
 
             if (shouldCalculate)
             {
@@ -49,26 +76,78 @@ namespace SizeTree.Core.Services
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = includeSubDirs
                 };
-                var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                string[] allFolders;
+                try
+                {
+                    allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                }
+                catch (Exception ex)
+                {
+                    var exception = new FileServiceException(
+                        "Failure in file service",
+                        new CalculateFolderSizesAsyncStreamException(
+                            "Size calculation for given root path failed",
+                            ex));
+                    throw exception;
+                }
                 foreach (var folder in allFolders)
                 {
-                    var generated = GenerateFolderInfo(folder, true);
+                    FolderSizeInfo generated = null;
+                    try
+                    {
+                        generated = GenerateFolderInfo(folder, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        var exception = new FileServiceException(
+                            "Failure in file service",
+                            new CalculateFolderSizesAsyncStreamException(
+                                "Size calculation for given root path failed",
+                                ex));
+                        throw exception;
+                    }
                     yield return generated;
                 }
-                var root = GenerateFolderInfo(rootDirPath, false);
+                FolderSizeInfo root = null;
+                try
+                {
+                    root = GenerateFolderInfo(rootDirPath, false);
+                }
+                catch (Exception ex)
+                {
+                    var exception = new FileServiceException(
+                        "Failure in file service",
+                        new CalculateFolderSizesAsyncStreamException(
+                            "Size calculation for given root path failed",
+                            ex));
+                    throw exception;
+                }
                 yield return root;
             }
+
         }
         public async Task<int> GetCountOfSubDirectories(string rootDirPath)
         {
-            await Task.Delay(0);
-            var options = new EnumerationOptions
+            try
             {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = true
-            };
-            var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
-            return allFolders.Count();
+                await Task.Delay(0);
+                var options = new EnumerationOptions
+                {
+                    IgnoreInaccessible = true,
+                    RecurseSubdirectories = true
+                };
+                var allFolders = Directory.GetDirectories(rootDirPath, "*", options);
+                return allFolders.Count();
+            }
+            catch(Exception ex)
+            {
+                var exception = new FileServiceException(
+                    "Failure in file service",
+                    new CalculateFolderSizesAsyncStreamException(
+                        "Getting count of subdirectories failed",
+                        ex));
+                throw exception;
+            }
         }
 
         private FolderSizeInfo GenerateFolderInfo(string path, bool includeSubDirs, IEnumerable<FileInfo> additionalFiles = null)
